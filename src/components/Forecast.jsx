@@ -57,7 +57,7 @@ function Forecast({ weather }) {
   };
 
   return (
-    <div className="mt-8 p-4 bg-white bg-opacity-80 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
+    <div className="mt-8 p-4 bg-white bg-opacity-20 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
       <div className="text-center">
         <h2 className="text-3xl font-bold">
           {data.city}, <span className="text-xl">{data.country}</span>
