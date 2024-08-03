@@ -12,7 +12,10 @@ function SearchEngine({ query, setQuery, search }) {
         onChange={(e) => setQuery(e.target.value)}
         onKeyPress={search}
       />
-      <button className="bg-blue-500 text-white p-2 rounded-r-lg">
+      <button
+        className="bg-blue-500 text-white p-2 rounded-r-lg"
+        onClick={search}
+      >
         <i className="fas fa-search"></i>
       </button>
     </div>

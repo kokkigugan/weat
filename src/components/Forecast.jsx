@@ -34,9 +34,9 @@ function Forecast({ weather }) {
     };
   }, [data.city]);
 
-  const formatDay = (dateString) => {
+  const formatDay = (timestamp) => {
     const options = { weekday: "short" };
-    const date = new Date(dateString * 1000);
+    const date = new Date(timestamp * 1000);
     return date.toLocaleDateString("en-US", options);
   };
 
@@ -49,14 +49,12 @@ function Forecast({ weather }) {
   };
 
   const renderTemperature = (temperature) => {
-    if (isCelsius) {
-      return Math.round(temperature);
-    } else {
-      return convertToFahrenheit(temperature);
-    }
+    return isCelsius ? Math.round(temperature) : convertToFahrenheit(temperature);
   };
 
-  const defaultSize = 40;
+  const WeatherIcon = ({ icon = "CLEAR_DAY", size = 64, animate = true }) => {
+    return <ReactAnimatedWeather icon={icon} size={size} animate={animate} />;
+  };
 
   return (
     <div className="mt-8 p-4 bg-white bg-opacity-80 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
@@ -70,10 +68,7 @@ function Forecast({ weather }) {
         <div className="flex justify-center items-center mt-4">
           <div className="text-6xl font-bold">
             {renderTemperature(data.temperature.current)}
-            <sup
-              className="text-2xl cursor-pointer"
-              onClick={toggleTemperatureUnit}
-            >
+            <sup className="text-2xl cursor-pointer" onClick={toggleTemperatureUnit}>
               {isCelsius ? "°C" : "°F"} | {isCelsius ? "°F" : "°C"}
             </sup>
           </div>
@@ -82,18 +77,11 @@ function Forecast({ weather }) {
         <>
           <div className="flex flex-col items-center md:flex-row md:justify-center mt-4">
             {data.condition.icon_url && (
-              <img
-                src={data.condition.icon_url}
-                alt={data.condition.description}
-                className="w-20 h-20"
-              />
+              <img src={data.condition.icon_url} alt={data.condition.description} className="w-20 h-20" />
             )}
             <div className="text-6xl font-bold md:ml-4">
               {renderTemperature(data.temperature.current)}
-              <sup
-                className="text-2xl cursor-pointer"
-                onClick={toggleTemperatureUnit}
-              >
+              <sup className="text-2xl cursor-pointer" onClick={toggleTemperatureUnit}>
                 {isCelsius ? "°C" : "°F"} | {isCelsius ? "°F" : "°C"}
               </sup>
             </div>
@@ -101,12 +89,12 @@ function Forecast({ weather }) {
           <p className="text-center text-gray-500">{data.condition.description}</p>
           <div className="grid grid-cols-2 gap-4 mt-4">
             <div className="flex flex-col items-center">
-              <ReactAnimatedWeather icon="WIND" size={defaultSize} />
+              <WeatherIcon icon="WIND" size={40} />
               <p>{data.wind.speed} m/s</p>
               <p className="text-sm text-gray-500">Wind speed</p>
             </div>
             <div className="flex flex-col items-center">
-              <ReactAnimatedWeather icon="RAIN" size={defaultSize} />
+              <WeatherIcon icon="RAIN" size={40} />
               <p>{data.temperature.humidity}%</p>
               <p className="text-sm text-gray-500">Humidity</p>
             </div>
@@ -114,23 +102,18 @@ function Forecast({ weather }) {
           <div className="mt-8">
             <h3 className="text-xl font-bold">5-Day Forecast:</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-              {forecastData &&
-                forecastData.slice(0, 5).map((day) => (
-                  <div className="text-center" key={day.time}>
-                    <p>{formatDay(day.time)}</p>
-                    {day.condition.icon_url && (
-                      <img
-                        className="w-12 h-12 mx-auto"
-                        src={day.condition.icon_url}
-                        alt={day.condition.description}
-                      />
-                    )}
-                    <p>
-                      {Math.round(day.temperature.minimum)}°/
-                      <span>{Math.round(day.temperature.maximum)}°</span>
-                    </p>
-                  </div>
-                ))}
+              {forecastData.slice(0, 5).map((day) => (
+                <div className="text-center" key={day.time}>
+                  <p>{formatDay(day.time)}</p>
+                  {day.condition.icon_url && (
+                    <img className="w-12 h-12 mx-auto" src={day.condition.icon_url} alt={day.condition.description} />
+                  )}
+                  <p>
+                    {Math.round(day.temperature.minimum)}°/
+                    <span>{Math.round(day.temperature.maximum)}°</span>
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </>
